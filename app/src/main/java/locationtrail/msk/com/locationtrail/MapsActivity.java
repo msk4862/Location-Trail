@@ -25,7 +25,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Random;
 
 import androidx.annotation.ColorInt;
@@ -98,7 +100,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(final GoogleMap googleMap) {
         mMap = googleMap;
 
-        mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+//        mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
 
         // adding polylines
         final PolylineOptions polylineOptions = new PolylineOptions()
@@ -119,8 +121,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 locTrails.add(updated);
 
                 //adding marker
-                mMap.addMarker(new MarkerOptions().position(updated).title("Updated location number: " + locTrails.size()));
-                mMap.animateCamera(CameraUpdateFactory.newLatLng(updated));
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                String timeStamp  = dateFormat.format(new Date());
+
+                mMap.addMarker(new MarkerOptions().position(updated).title("Timestamp: " + timeStamp));
+                //mMap.animateCamera(CameraUpdateFactory.newLatLng(updated));
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(updated,24.0f));
 
                 //adding new polyline
                 polylineOptions.add(updated);
@@ -166,7 +172,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void showGPSDisabledAlertToUser(){
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder.setMessage("GPS is disabled in your device. Would you like to enable it?")
+        alertDialogBuilder.setMessage("GPS is disabled in your device.\nWould you like to enable it?")
                 .setCancelable(false)
                 .setPositiveButton("Goto Settings Page To Enable GPS",
                         new DialogInterface.OnClickListener(){
