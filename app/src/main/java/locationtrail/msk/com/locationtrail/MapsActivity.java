@@ -28,6 +28,7 @@ import androidx.annotation.ColorInt;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
 
+
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
@@ -36,12 +37,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private  LocationListener locationListener;
     private LocationManager locationManager;
 
-    private final long MIN_TIME = 1000;        //1 seconds
-    private final long MIN_DISTANCE = 5000;    //5 meter
+    private final long MIN_TIME = 5000;        //time to update location = 5 seconds
+    private final long MIN_DISTANCE = 1;    //1 meter displacement
 
     Polyline polyline = null;
 
-    private final int[] colors = {Color.RED, Color.GREEN, Color.BLUE};
+    private final int LOCATION_PERMISSION_REQUESTCODE = 999;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +51,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         setContentView(R.layout.activity_maps);
 
         locTrails = new ArrayList<>();
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -57,7 +59,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // requesting permission from user if not provided
         ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, PackageManager.PERMISSION_GRANTED);
-
     }
 
 
@@ -74,27 +75,34 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(final GoogleMap googleMap) {
         mMap = googleMap;
 
+        mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+
+        // adding polylines
+        final PolylineOptions polylineOptions = new PolylineOptions()
+                .addAll(locTrails).clickable(true);
+
+        polyline = googleMap.addPolyline(polylineOptions);
+        polyline.setWidth(10f);
+
+        Log.d("DEBUG", "MAP READY");
+
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
 
                 LatLng updated = new LatLng(location.getLatitude(), location.getLongitude());
-                mMap.addMarker(new MarkerOptions().position(updated).title("Updated Location"));
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(updated));
-                mMap.animateCamera(CameraUpdateFactory.newLatLng(updated));
 
-                //adding new updated location
+                // adding new updated location
                 locTrails.add(updated);
 
-                // adding polyline
-                PolylineOptions polylineOptions = new PolylineOptions()
-                        .addAll(locTrails).clickable(true);
+                //adding marker
+                mMap.addMarker(new MarkerOptions().position(updated).title("Updated location number: " + locTrails.size()));
+                mMap.animateCamera(CameraUpdateFactory.newLatLng(updated));
 
-                polyline = mMap.addPolyline(polylineOptions);
-
-                Random random = new Random();
-                polyline.setColor(Color.RED);
-                polyline.setWidth(8f);
+                //adding new polyline
+                polylineOptions.add(updated);
+                polyline = googleMap.addPolyline(polylineOptions);
+                polyline.setColor(Color.rgb(74,137,243));
 
             }
 
@@ -119,8 +127,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //setting lication update time and distance
         try {
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, locationListener);
+
         } catch (SecurityException | NullPointerException e) {
             e.printStackTrace();
         }
+
     }
 }
