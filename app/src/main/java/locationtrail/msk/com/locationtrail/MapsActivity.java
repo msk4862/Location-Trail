@@ -11,13 +11,11 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.Debug;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -28,9 +26,6 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Random;
-
-import androidx.annotation.ColorInt;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
@@ -49,7 +44,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     Polyline polyline = null;
 
-    private final int LOCATION_PERMISSION_REQUESTCODE = 999;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,28 +58,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        getPermission();
-
     }
 
-    private  void getPermission() {
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            // Permission is not granted
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUESTCODE);
 
-        }
-    }
-
-    @Override
-    protected void onStart() {
-
-        super.onStart();
-        // requesting permission from user if not provided
-
-
-    }
 
     /**
      * Manipulates the map once available.
@@ -115,6 +90,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onLocationChanged(Location location) {
 
+                Log.d("DEBUG", "UPDATED");
+
                 LatLng updated = new LatLng(location.getLatitude(), location.getLongitude());
 
                 // adding new updated location
@@ -130,7 +107,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 //adding new polyline
                 polylineOptions.add(updated);
-                polyline = googleMap.addPolyline(polylineOptions);
+                polyline = mMap.addPolyline(polylineOptions);
                 polyline.setColor(Color.rgb(74,137,243));
 
             }
@@ -154,9 +131,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
         if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
-            Toast.makeText(this, "GPS is Enabled in your devide", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "GPS is Enabled in your device", Toast.LENGTH_SHORT).show();
         }else{
             // GPS not enabled
+            Toast.makeText(this, "GPS is not enabled in your device", Toast.LENGTH_SHORT).show();
             showGPSDisabledAlertToUser();
         }
 
