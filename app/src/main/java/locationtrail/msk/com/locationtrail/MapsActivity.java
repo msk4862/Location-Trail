@@ -132,6 +132,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
             Toast.makeText(this, "GPS is Enabled in your device", Toast.LENGTH_SHORT).show();
+
         }else{
             // GPS not enabled
             Toast.makeText(this, "GPS is not enabled in your device", Toast.LENGTH_SHORT).show();
@@ -142,6 +143,28 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         try {
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, locationListener);
 
+            
+            Log.d("DEBUG", "first");
+
+            // first marker
+            Location loc = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
+            LatLng updated = new LatLng(loc.getLatitude(), loc.getLongitude());
+
+            // adding new updated location
+            locTrails.add(updated);
+
+            //adding marker
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String timeStamp  = dateFormat.format(new Date());
+
+            mMap.addMarker(new MarkerOptions().position(updated).title("Timestamp: " + timeStamp));
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(updated,24.0f));
+
+            //adding new polyline
+            polylineOptions.add(updated);
+            polyline = mMap.addPolyline(polylineOptions);
+            polyline.setColor(Color.rgb(74,137,243));
+
         } catch (SecurityException | NullPointerException e) {
             e.printStackTrace();
         }
@@ -150,7 +173,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void showGPSDisabledAlertToUser(){
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder.setMessage("GPS is disabled in your device.\nWould you like to enable it?")
+        alertDialogBuilder.setMessage("GPS is disabled in your device please enable it.")
                 .setCancelable(false)
                 .setPositiveButton("Goto Settings Page To Enable GPS",
                         new DialogInterface.OnClickListener(){

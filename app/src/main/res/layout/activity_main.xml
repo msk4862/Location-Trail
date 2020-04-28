@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#511845"
     tools:context=".MainActivity">
 
 
@@ -14,7 +15,7 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="60dp"
-        android:src="@drawable/logo" />
+        android:src="@drawable/logo1" />
 
     <TextView
         android:id="@+id/textView"
@@ -22,10 +23,10 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/imageView"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="15dp"
         android:textSize="20sp"
         android:textStyle="bold"
-        android:textColor="#A9A9A9"
+        android:textColor="#f8f8f8"
         android:text="STAY HOME, SAVE LIVES" />
 
 
@@ -35,13 +36,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Phone Number"
+        android:textColorHint="#511845"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
         android:inputType="phone"
         android:maxLines="1"
         android:singleLine="true"
+        android:background="@drawable/edittext"
         android:layout_marginBottom="10dp"
-        android:padding="10dp"
+        android:padding="12dp"
+        android:textColor="#511845"
         android:layout_above="@+id/register"/>
 
     <Button
@@ -51,10 +55,15 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="Register"
+        android:textSize="20sp"
+        android:textColor="#f8f8f8"
         android:textStyle="bold"
         android:layout_centerHorizontal="true"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
         android:paddingEnd="30dp"
         android:paddingStart="30dp"
+        android:background="@drawable/button"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="35dp"/>
 

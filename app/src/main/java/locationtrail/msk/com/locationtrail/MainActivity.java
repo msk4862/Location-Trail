@@ -10,7 +10,10 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
+
+import java.util.regex.Pattern;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -21,6 +24,7 @@ public class MainActivity extends Activity {
     private final int LOCATION_PERMISSION_REQUESTCODE = 999;
 
     private LocationManager locationManager;
+    EditText phone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,14 +32,19 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         register = findViewById(R.id.register);
+        phone = findViewById(R.id.phone);
 
         getPermission();
 
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(v.getContext(), MapsActivity.class);
-                startActivity(i);
+                if(isValidNumber(phone.getText().toString())) {
+                    Intent i = new Intent(v.getContext(), MapsActivity.class);
+                    startActivity(i);
+                } else {
+                    Toast.makeText(v.getContext(), "Please enter a valid phone number!", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -52,6 +61,12 @@ public class MainActivity extends Activity {
         }
     }
 
+    private boolean isValidNumber(String phone) {
+
+        return android.util.Patterns.PHONE.matcher(phone).matches();
+
+    }
+
     private  void getPermission() {
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
@@ -64,7 +79,7 @@ public class MainActivity extends Activity {
 
     private void showGPSDisabledAlertToUser(){
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder.setMessage("GPS is disabled in your device.\nWould you like to enable it?")
+        alertDialogBuilder.setMessage("GPS is disabled in your device please enable it.")
                 .setCancelable(false)
                 .setPositiveButton("Goto Settings Page To Enable GPS",
                         new DialogInterface.OnClickListener(){
