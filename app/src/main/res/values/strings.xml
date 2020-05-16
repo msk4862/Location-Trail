@@ -15,4 +15,11 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string-array name="phone_num">
+        <item>8800637089</item>
+        <item>9868208402</item>
+        <item>982637384</item>
+        <item>8204615497</item>
+        <item>92184625984</item>
+    </string-array>
 </resources>
